@@ -21,6 +21,8 @@ const KITCHEN_1 =
   'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/02fe2414-73ba-46a6-b463-960a544d75a8.jpg';
 const KITCHEN_2 =
   'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/8ef3b25b-0790-41ad-b65f-f4dc10a64d34.jpg';
+const KITCHEN_3 =
+  'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/d3dbed28-142b-4691-b73c-c04033a16d39.jpg';
 
 const NAV = [
   { id: 'services', label: 'Услуги' },
@@ -65,7 +67,7 @@ const PROCESS = [
 const PORTFOLIO = [
   { img: KITCHEN_1, title: 'Скандинавия', tag: 'Светлый минимализм' },
   { img: KITCHEN_2, title: 'Эмеральд', tag: 'Зелёный модерн' },
-  { img: KITCHEN_1, title: 'Лофт-кухня', tag: 'Дерево + бетон' },
+  { img: KITCHEN_3, title: 'Стекло и свет', tag: 'Современный модерн' },
 ];
 
 const REVIEWS = [
