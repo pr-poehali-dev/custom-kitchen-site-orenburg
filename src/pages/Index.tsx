@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +23,12 @@ const KITCHEN_2 =
   'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/8ef3b25b-0790-41ad-b65f-f4dc10a64d34.jpg';
 const KITCHEN_3 =
   'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/d3dbed28-142b-4691-b73c-c04033a16d39.jpg';
+const KITCHEN_4 =
+  'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/2eed7b57-5630-4d85-b129-b83bd23a45fd.jpg';
+const KITCHEN_5 =
+  'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/a54ab4df-e9bf-4a14-8403-8f5969f9a98d.jpg';
+const KITCHEN_6 =
+  'https://cdn.poehali.dev/projects/cc694f34-7c98-4bce-a285-96cad079f09e/files/431bc66c-57b8-48ed-9d2e-0d43d11246a7.jpg';
 
 const NAV = [
   { id: 'services', label: 'Услуги' },
@@ -65,10 +71,15 @@ const PROCESS = [
 ];
 
 const PORTFOLIO = [
-  { img: KITCHEN_1, title: 'Скандинавия', tag: 'Светлый минимализм' },
-  { img: KITCHEN_2, title: 'Эмеральд', tag: 'Зелёный модерн' },
-  { img: KITCHEN_3, title: 'Стекло и свет', tag: 'Современный модерн' },
+  { img: KITCHEN_4, title: 'Беж и золото', tag: 'Премиум', size: 'large' },
+  { img: KITCHEN_2, title: 'Эмеральд', tag: 'Тёмный модерн', size: 'small' },
+  { img: KITCHEN_3, title: 'Стекло и свет', tag: 'Хай-тек', size: 'small' },
+  { img: KITCHEN_5, title: 'Тёмный орех', tag: 'Лофт', size: 'small' },
+  { img: KITCHEN_6, title: 'Классика', tag: 'Прованс', size: 'small' },
+  { img: KITCHEN_1, title: 'Скандинавия', tag: 'Минимализм', size: 'large' },
 ];
+
+const PORTFOLIO_FILTERS = ['Все', 'Премиум', 'Модерн', 'Классика', 'Лофт'];
 
 const REVIEWS = [
   {
@@ -172,6 +183,96 @@ function BookingDialog({ trigger }: { trigger: React.ReactNode }) {
         <BookingForm onDone={() => setOpen(false)} source="Окно записи" />
       </DialogContent>
     </Dialog>
+  );
+}
+
+function PortfolioSection() {
+  const [activeFilter, setActiveFilter] = useState('Все');
+
+  const filtered = useMemo(() => {
+    if (activeFilter === 'Все') return PORTFOLIO;
+    return PORTFOLIO.filter((p) =>
+      p.tag.toLowerCase().includes(activeFilter.toLowerCase()),
+    );
+  }, [activeFilter]);
+
+  return (
+    <section id="portfolio" className="py-24 bg-card/50">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <span className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+              Портфолио
+            </span>
+            <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight lg:text-5xl">
+              Наши работы
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {PORTFOLIO_FILTERS.map((f) => (
+              <button
+                key={f}
+                onClick={() => setActiveFilter(f)}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                  activeFilter === f
+                    ? 'bg-primary text-primary-foreground'
+                    : 'border border-primary/15 bg-card text-foreground hover:border-primary/40'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Asymmetric masonry grid */}
+        <div className="mt-12 columns-1 gap-5 sm:columns-2 lg:columns-3">
+          {filtered.map((p, i) => (
+            <div
+              key={i}
+              className={`group relative mb-5 overflow-hidden rounded-3xl border border-primary/10 break-inside-avoid ${
+                p.size === 'large' ? 'row-span-2' : ''
+              }`}
+            >
+              <img
+                src={p.img}
+                alt={p.title}
+                className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+                  p.size === 'large' ? 'h-[480px]' : 'h-64'
+                }`}
+              />
+              {/* Always visible tag */}
+              <div className="absolute left-4 top-4">
+                <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+                  {p.tag}
+                </span>
+              </div>
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/30 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-95" />
+              <div className="absolute bottom-0 left-0 right-0 translate-y-4 p-6 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                <h3 className="font-display text-2xl font-bold text-primary-foreground">
+                  {p.title}
+                </h3>
+                <BookingDialog
+                  trigger={
+                    <button className="mt-3 flex items-center gap-2 text-sm font-semibold text-secondary">
+                      Хочу такую
+                      <Icon name="ArrowRight" size={16} />
+                    </button>
+                  }
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="mt-12 py-20 text-center text-muted-foreground">
+            Нет работ в этой категории
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -328,47 +429,7 @@ const Index = () => {
       </section>
 
       {/* Portfolio */}
-      <section id="portfolio" className="py-24 bg-card/50">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="max-w-2xl">
-              <span className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                Портфолио
-              </span>
-              <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Наши работы
-              </h2>
-            </div>
-            <p className="max-w-xs text-muted-foreground">
-              Каждая кухня уникальна и создана под конкретное помещение и образ
-              жизни.
-            </p>
-          </div>
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {PORTFOLIO.map((p, i) => (
-              <div
-                key={i}
-                className="group relative overflow-hidden rounded-3xl border border-primary/10"
-              >
-                <img
-                  src={p.img}
-                  alt={p.title}
-                  className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="absolute bottom-0 left-0 right-0 translate-y-3 p-6 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                  <span className="text-sm font-medium text-secondary">
-                    {p.tag}
-                  </span>
-                  <h3 className="font-display text-2xl font-bold text-primary-foreground">
-                    {p.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PortfolioSection />
 
       {/* Process */}
       <section id="process" className="py-24">
