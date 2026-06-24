@@ -514,11 +514,11 @@ const Index = () => {
                 </p>
                 <div className="mt-8 space-y-4">
                   <a
-                    href="tel:+73532000000"
+                    href="tel:+89962557733"
                     className="flex items-center gap-3 font-display text-xl font-bold text-secondary-foreground"
                   >
                     <Icon name="Phone" size={22} />
-                    +7 (3532) 00-00-00
+                    8 (996) 255-77-33
                   </a>
                   <div className="flex items-center gap-3 text-secondary-foreground/90">
                     <Icon name="MapPin" size={22} />
