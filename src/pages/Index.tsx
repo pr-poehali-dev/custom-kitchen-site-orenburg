@@ -544,6 +544,22 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Map */}
+      <section className="py-0">
+        <div className="container mx-auto px-6 pb-16">
+          <div className="overflow-hidden rounded-3xl border border-primary/10 shadow-sm">
+            <iframe
+              src="https://yandex.ru/map-widget/v1/?text=Оренбург+ул+Шоссейная+10&z=16&l=map"
+              width="100%"
+              height="420"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen
+              title="Наш адрес на карте"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border bg-primary py-12 text-primary-foreground">
         <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-6 sm:flex-row">
