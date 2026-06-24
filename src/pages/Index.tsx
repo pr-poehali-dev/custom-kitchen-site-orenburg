@@ -93,20 +93,36 @@ const FAQ = [
   { q: 'Можно в рассрочку?', a: 'Да, оформляем рассрочку 0% на срок до 12 месяцев.' },
 ];
 
-function BookingForm({ onDone }: { onDone: () => void }) {
+const SEND_LEAD_URL = 'https://functions.poehali.dev/c74c8f92-ca90-449c-af68-67cb385b58c5';
+
+function BookingForm({ onDone, source }: { onDone: () => void; source?: string }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone) {
       toast.error('Заполните имя и телефон');
       return;
     }
-    toast.success('Заявка принята! Перезвоним в течение 15 минут.');
-    setName('');
-    setPhone('');
-    onDone();
+    setLoading(true);
+    try {
+      const res = await fetch(SEND_LEAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, source: source || 'Сайт' }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success('Заявка принята! Перезвоним в течение 15 минут.');
+      setName('');
+      setPhone('');
+      onDone();
+    } catch {
+      toast.error('Не удалось отправить. Позвоните нам по телефону.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -125,9 +141,10 @@ function BookingForm({ onDone }: { onDone: () => void }) {
       />
       <Button
         type="submit"
+        disabled={loading}
         className="h-12 w-full rounded-xl bg-secondary text-secondary-foreground font-semibold text-base hover:bg-secondary/90"
       >
-        Записаться на замер
+        {loading ? 'Отправляем...' : 'Записаться на замер'}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
@@ -150,7 +167,7 @@ function BookingDialog({ trigger }: { trigger: React.ReactNode }) {
         <p className="text-sm text-muted-foreground">
           Оставьте контакты — подберём удобное время для бесплатного замера.
         </p>
-        <BookingForm onDone={() => setOpen(false)} />
+        <BookingForm onDone={() => setOpen(false)} source="Окно записи" />
       </DialogContent>
     </Dialog>
   );
@@ -519,7 +536,7 @@ const Index = () => {
                   Перезвоним в течение 15 минут
                 </p>
                 <div className="mt-5">
-                  <BookingForm onDone={() => {}} />
+                  <BookingForm onDone={() => {}} source="Блок контактов" />
                 </div>
               </div>
             </div>
